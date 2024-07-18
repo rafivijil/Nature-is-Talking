@@ -1,0 +1,58 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CombinedZoomSoundTrigger : MonoBehaviour
+{
+    public Camera playerCamera; // Assign the main camera in the Inspector
+    public float zoomDistance = 100f; // Maximum distance for "zoom" tag detection
+
+    void Update()
+    {
+        if (Input.GetMouseButton(1)) // Right mouse button is held down
+        {
+            ZoomCheck();
+        }
+    }
+
+    void ZoomCheck()
+    {
+        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        // Check for objects with "zoom2" tag without distance limit
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            if (hit.collider.CompareTag("zoom2"))
+            {
+                AudioSource audioSource = hit.collider.GetComponent<AudioSource>();
+                if (audioSource != null)
+                {
+                    PlaySound(audioSource);
+                    return; // Exit to avoid checking the "zoom" tag if "zoom2" is already hit
+                }
+            }
+        }
+
+        // Check for objects with "zoom" tag within zoomDistance
+        if (Physics.Raycast(ray, out hit, zoomDistance))
+        {
+            if (hit.collider.CompareTag("zoom"))
+            {
+                AudioSource audioSource = hit.collider.GetComponent<AudioSource>();
+                if (audioSource != null)
+                {
+                    PlaySound(audioSource);
+                }
+            }
+        }
+    }
+
+    void PlaySound(AudioSource audioSource)
+    {
+        if (!audioSource.isPlaying)
+        {
+            audioSource.Play();
+        }
+    }
+}
