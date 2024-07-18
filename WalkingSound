@@ -1,0 +1,50 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class WalkingSound : MonoBehaviour
+{
+    public AudioSource walkingAudioSource;
+    public float walkingSpeedThreshold = 0.1f; // Speed threshold to consider the player as walking
+
+    private Rigidbody rb;
+
+    void Start()
+    {
+        // Ensure AudioSource is attached
+        if (walkingAudioSource == null)
+        {
+            walkingAudioSource = GetComponent<AudioSource>();
+        }
+
+        // Get the Rigidbody component
+        rb = GetComponent<Rigidbody>();
+
+        if (walkingAudioSource == null || rb == null)
+        {
+            Debug.LogError("Missing components: AudioSource or Rigidbody");
+        }
+    }
+
+    void Update()
+    {
+        // Check if the player is moving (walking)
+        if (rb != null && walkingAudioSource != null)
+        {
+            if (rb.velocity.magnitude > walkingSpeedThreshold)
+            {
+                if (!walkingAudioSource.isPlaying)
+                {
+                    walkingAudioSource.Play();
+                }
+            }
+            else
+            {
+                if (walkingAudioSource.isPlaying)
+                {
+                    walkingAudioSource.Pause();
+                }
+            }
+        }
+    }
+}
