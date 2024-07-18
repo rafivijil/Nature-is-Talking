@@ -1,0 +1,35 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class AreaSoundTrigger : MonoBehaviour
+{
+    private bool hasPlayed = false;
+    private AudioSource audioSource;
+
+    void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            Debug.LogError("AudioSource component missing from this game object.");
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && !hasPlayed)
+        {
+            PlaySound();
+        }
+    }
+
+    void PlaySound()
+    {
+        if (audioSource != null)
+        {
+            audioSource.Play();
+            hasPlayed = true;
+        }
+    }
+}
